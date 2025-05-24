@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - CineGo</title>
+    <style>
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== COMPACT HEADER STYLES ===== */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+            color: #f59e0b;
+        }
+
+        .search-container {
+            width: 200px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            border: none;
+            font-size: 0.9rem;
+            padding-right: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* ===== MAIN CONTENT STYLES ===== */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Movie Info Section */
+        .movie-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            align-items: flex-start;
+        }
+
+        .movie-poster {
+            width: 250px;
+            height: 375px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .movie-info {
+            flex: 1;
+        }
+
+        .movie-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #f59e0b, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .movie-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #64748b;
+        }
+
+        .movie-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .movie-description {
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        /* Theater Selection */
+        .theater-selection {
+            margin-top: 2rem;
+        }
+
+        .theater-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .theater-tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .theater-tab.active {
+            border-bottom: 3px solid #1e40af;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .showtime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .showtime-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .showtime-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .theater-name {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .distance {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .time-slot {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .time-slot:hover, .time-slot.active {
+            background: #1e40af;
+            color: white;
+        }
+
+        /* Booking Form */
+        .booking-form {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 3rem;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .book-btn {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .book-btn:hover {
+            background: #1e3a8a;
+        }
+
+        /* Success Message */
+        .booking-success {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* ===== FOOTER STYLES ===== */
+        footer {
+            background: #0f172a;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Compact Header with Back Button -->
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Home</span>
+                </button>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-film logo-icon"></i>
+                    <span>CineGo</span>
+                </a>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Movie Info -->
+        <div class="movie-header">
+            <img id="moviePoster" src="" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h1 id="movieTitle" class="movie-title">Movie Title</h1>
+                <div class="movie-meta">
+                    <span id="movieRating"><i class="fas fa-star"></i> 0.0/10</span>
+                    <span id="movieDuration"><i class="fas fa-clock"></i> 0h 00m</span>
+                    <span id="movieGenre"><i class="fas fa-tag"></i> Genre</span>
+                </div>
+                <p id="movieDescription" class="movie-description">Movie description will appear here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+        </div>
+
+        <!-- Theater Selection -->
+        <div class="theater-selection">
+            <h2>Select Theater</h2>
+            <div class="theater-tabs">
+                <div class="theater-tab active" data-theater="all">All Theaters</div>
+                <div class="theater-tab" data-theater="amc">AMC</div>
+                <div class="theater-tab" data-theater="regal">Regal</div>
+                <div class="theater-tab" data-theater="cineplex">Cineplex</div>
+            </div>
+
+            <div class="showtime-grid">
+                <!-- Theater 1 -->
+                <div class="showtime-card" data-theater="amc">
+                    <div class="showtime-header">
+                        <div class="theater-name">AMC City Center</div>
+                        <div class="distance">0.5 miles</div>
+                    </div>
+                    <div class="time-slots">
+                        <div class="time-slot">10:00 AM</div>
+                        <div class="time-slot">1:30 PM</div>
+                        <div class="time-slot">4:45 PM</div>
+                        <div class="time-slot">8:00 PM</div>
+                    </div>
+                </div>
+
+                <!-- Theater 2 -->
+                <div class="showtime-card" data-theater="regal">
+                    <div class="showtime-header">
+                        <div class="theater-name">Regal Cinemas</div>
+                        <div class="distance">1.2 miles</div>
+                    </div>
+                    <div class="time-slots">
+                        <div class="time-slot">11:15 AM</div>
+                        <div class="time-slot">2:30 PM</div>
+                        <div class="time-slot">6:00 PM</div>
+                        <div class="time-slot">9:15 PM</div>
+                    </div>
+                </div>
+
+                <!-- Theater 3 -->
+                <div class="showtime-card" data-theater="cineplex">
+                    <div class="showtime-header">
+                        <div class="theater-name">Cineplex Downtown</div>
+                        <div class="distance">0.8 miles</div>
+                    </div>
+                    <div class="time-slots">
+                        <div class="time-slot">12:00 PM</div>
+                        <div class="time-slot">3:30 PM</div>
+                        <div class="time-slot">7:00 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="booking-form">
+            <h2>Complete Your Booking</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="selectedTheater">Theater</label>
+                    <input type="text" id="selectedTheater" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="selectedTime">Showtime</label>
+                    <input type="text" id="selectedTime" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="tickets">Number of Tickets</label>
+                    <select id="tickets">
+                        <option value="1">1 Ticket</option>
+                        <option value="2">2 Tickets</option>
+                        <option value="3">3 Tickets</option>
+                        <option value="4">4 Tickets</option>
+                        <option value="5">5 Tickets</option>
+                    </select>
+                </div>
+                <button type="submit" class="book-btn">Confirm Booking</button>
+                <div id="successMessage" class="booking-success">
+                    Booking confirmed! Thank you for your purchase.
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 CineGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get movie details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const movie = urlParams.get('movie');
+
+        // Movie data (in a real app, this would come from an API)
+        const movies = {
+            "Dune: Part Two": {
+                poster: "https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg",
+                rating: 8.5,
+                duration: "2h 46m",
+                genre: "Sci-Fi, Adventure",
+                description: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, he endeavors to prevent a terrible future only he can foresee."
+            },
+            "The Batman": {
+                poster: "https://m.media-amazon.com/images/M/MV5BMDdmMTBiNTYtMDIzNi00NGVlLWIzMDYtZTk3MTQ3NGQxZGEwXkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_FMjpg_UX1000_.jpg",
+                rating: 7.9,
+                duration: "2h 56m",
+                genre: "Action, Crime",
+                description: "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption and question his family's involvement. As the evidence begins to lead closer to home and the scale of the perpetrator's plans becomes clear, he must forge new relationships, unmask the culprit, and bring justice to the abuse of power and corruption that has long plagued Gotham City."
+            },
+            "Interstellar": {
+                poster: "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg",
+                rating: 8.6,
+                duration: "2h 49m",
+                genre: "Sci-Fi, Drama",
+                description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. The crew of the Endurance must navigate through treacherous cosmic phenomena and the powerful gravitational forces of a supermassive black hole as they search for a new habitable planet for humanity."
+            },
+            "Leo": {
+                poster: "https://www.themoviedb.org/t/p/w1280/5l62iL3gJThyauCyzlsKRh8kqGX.jpg",
+                rating: 7.1,
+                duration: "2h 44m",
+                genre: "Action, Thriller | Tamil",
+                description: "The story follows Parthiban , a wildlife rescuer and café owner in Theog, Himachal Pradesh. His life takes a dramatic turn when gangsters Antony and Harold Das suspect him to be Antony's estranged son, Leo. The film is partially inspired by A History of Violence and is the third installment in the Lokesh Cinematic Universe"
+            }
+            
+        };
+
+        // Set movie details if found
+        if (movie && movies[movie]) {
+            document.getElementById('movieTitle').textContent = movie;
+            document.getElementById('moviePoster').src = movies[movie].poster;
+            document.getElementById('moviePoster').alt = movie;
+            document.getElementById('movieRating').innerHTML = `<i class="fas fa-star"></i> ${movies[movie].rating}/10`;
+            document.getElementById('movieDuration').innerHTML = `<i class="fas fa-clock"></i> ${movies[movie].duration}`;
+            document.getElementById('movieGenre').innerHTML = `<i class="fas fa-tag"></i> ${movies[movie].genre}`;
+            document.getElementById('movieDescription').textContent = movies[movie].description;
+        } else {
+            // Redirect back if movie not found
+            window.location.href = 'index.html';
+        }
+
+        // Theater tab switching
+        const theaterTabs = document.querySelectorAll('.theater-tab');
+        theaterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                theaterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Filter theaters
+                const theaterType = tab.dataset.theater;
+                const showtimeCards = document.querySelectorAll('.showtime-card');
+                
+                showtimeCards.forEach(card => {
+                    if (theaterType === 'all' || card.dataset.theater === theaterType) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Time slot selection
+        const timeSlots = document.querySelectorAll('.time-slot');
+        timeSlots.forEach(slot => {
+            slot.addEventListener('click', function() {
+                // Remove active class from all slots
+                timeSlots.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked slot
+                this.classList.add('active');
+                
+                // Update booking form
+                const theater = this.closest('.showtime-card').querySelector('.theater-name').textContent;
+                document.getElementById('selectedTheater').value = theater;
+                document.getElementById('selectedTime').value = this.textContent;
+            });
+        });
+
+        /// Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const theater = document.getElementById('selectedTheater').value;
+        const time = document.getElementById('selectedTime').value;
+        const tickets = document.getElementById('tickets').value;
+        
+        if (!theater || !time) {
+            // Show error message
+            document.getElementById('successMessage').textContent = 'Please select a theater and showtime';
+            document.getElementById('successMessage').style.backgroundColor = '#f44336';
+            document.getElementById('successMessage').style.display = 'block';
+            return;
+        }
+        
+        // Get the movie title
+        const movieTitle = document.getElementById('movieTitle').textContent;
+        
+        // Redirect to select seats page with booking details as URL parameters
+        window.location.href = `select-seats.html?movie=${encodeURIComponent(movieTitle)}&theater=${encodeURIComponent(theater)}&time=${encodeURIComponent(time)}&tickets=${tickets}`;
+          
+        });
+    </script>
+</body>
+</html>

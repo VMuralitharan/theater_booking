@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - CineGo</title>
+    <style>
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER STYLES ===== */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* ===== MAIN CONTENT STYLES ===== */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-header {
+            margin-bottom: 2rem;
+        }
+
+        .payment-header h2 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-summary {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .order-summary h3 {
+            margin-bottom: 1rem;
+            color: #1e40af;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item strong {
+            color: #64748b;
+        }
+
+        .total-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        .payment-methods {
+            margin-bottom: 2rem;
+        }
+
+        .payment-methods h3 {
+            margin-bottom: 1rem;
+            color: #1e40af;
+        }
+
+        .payment-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .payment-tab.active {
+            border-bottom: 2px solid #1e40af;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        .payment-tab:not(.active):hover {
+            background: #f8fafc;
+        }
+
+        .payment-form {
+            display: none;
+        }
+
+        .payment-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .saved-cards {
+            margin-top: 1rem;
+        }
+
+        .saved-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .saved-card:hover {
+            border-color: #1e40af;
+            background: #f0f9ff;
+        }
+
+        .saved-card.active {
+            border-color: #1e40af;
+            background: #f0f9ff;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #64748b;
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .card-info .card-number {
+            font-weight: 500;
+        }
+
+        .card-info .card-type {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .pay-btn {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .pay-btn:hover {
+            background: #1e3a8a;
+        }
+
+        /* ===== FOOTER STYLES ===== */
+        footer {
+            background: #0f172a;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-film"></i>
+                    <span>CineGo</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="payment-container">
+            <div class="payment-header">
+                <h2>Complete Your Payment</h2>
+                <p>Please enter your payment details to confirm your booking</p>
+            </div>
+            
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="order-details">
+                    <div class="detail-item">
+                        <strong>Movie:</strong>
+                        <span id="paymentMovie">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Theater:</strong>
+                        <span id="paymentTheater">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Showtime:</strong>
+                        <span id="paymentTime">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Seats:</strong>
+                        <span id="paymentSeats">-</span>
+                    </div>
+                </div>
+                <div class="total-price">
+                    Total: $<span id="paymentTotal">0.00</span>
+                </div>
+            </div>
+            
+            <div class="payment-methods">
+                <h3>Payment Method</h3>
+                
+                <div class="payment-tabs">
+                    <div class="payment-tab active" onclick="switchTab('new-card')">New Card</div>
+                    <div class="payment-tab" onclick="switchTab('saved-cards')">Saved Cards</div>
+                </div>
+                
+                <div id="new-card" class="payment-form active">
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="card-name">Cardholder Name</label>
+                        <input type="text" id="card-name" placeholder="John Doe">
+                    </div>
+                    
+                    <div class="card-details">
+                        <div class="form-group">
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="saved-cards" class="payment-form">
+                    <div class="saved-cards">
+                        <div class="saved-card active" onclick="selectCard(this)">
+                            <i class="fab fa-cc-visa card-icon"></i>
+                            <div class="card-info">
+                                <div class="card-number">•••• •••• •••• 4242</div>
+                                <div class="card-type">Visa - Expires 05/25</div>
+                            </div>
+                        </div>
+                        <div class="saved-card" onclick="selectCard(this)">
+                            <i class="fab fa-cc-mastercard card-icon"></i>
+                            <div class="card-info">
+                                <div class="card-number">•••• •••• •••• 5555</div>
+                                <div class="card-type">Mastercard - Expires 11/24</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="pay-btn" onclick="processPayment()">Pay Now</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 CineGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get booking details from session storage
+        const bookingData = JSON.parse(sessionStorage.getItem('currentBooking'));
+        
+        // Display booking info
+        if (bookingData) {
+            document.getElementById('paymentMovie').textContent = bookingData.movie;
+            document.getElementById('paymentTheater').textContent = bookingData.theater;
+            document.getElementById('paymentTime').textContent = bookingData.time;
+            document.getElementById('paymentSeats').textContent = bookingData.seats.join(', ');
+            document.getElementById('paymentTotal').textContent = bookingData.totalPrice;
+        } else {
+            // If no booking data, redirect back to seat selection
+            window.location.href = 'select-seats.html';
+        }
+        
+        // Switch between payment tabs
+        function switchTab(tabId) {
+            // Update active tab
+            document.querySelectorAll('.payment-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show corresponding form
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        // Select saved card
+        function selectCard(cardElement) {
+            document.querySelectorAll('.saved-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            cardElement.classList.add('active');
+        }
+        
+        // Process payment
+        function processPayment() {
+            // In a real app, you would validate the payment details and send to a payment processor
+            alert('Payment processed successfully! Redirecting to confirmation...');
+            
+            // Redirect to confirmation page
+            window.location.href = 'booking-confirmation.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Booking</title>
+    <style>
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER STYLES ===== */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://assets.codepen.io/3364143/7b3cdab7-4e65-4e7e-a5c5-85371e566f3c.png') center/cover;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            color: #f59e0b;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        nav a:hover {
+            color: #f59e0b;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f59e0b;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* User Profile Dropdown */
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f59e0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #0f172a;
+            transition: all 0.3s;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 200px;
+            overflow: hidden;
+            display: none;
+            z-index: 100;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1rem;
+            color: #1e293b;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f1f5f9;
+        }
+
+        .dropdown-menu a i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Social Media Badges */
+        .social-badges {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 90;
+        }
+
+        .social-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .social-badge:hover {
+            transform: translateY(-5px);
+        }
+
+        .facebook { background: #3b5998; }
+        .github { background: #333; }
+        .linkedin { background: #0077b5; }
+        .instagram { 
+            background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+        }
+
+        .header-content {
+            text-align: center;
+            padding: 2rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #f59e0b, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            font-size: 1rem;
+            padding-right: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+
+        .header-bottom {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .header-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .primary-btn {
+            background: #f59e0b;
+            color: #0f172a;
+        }
+
+        .primary-btn:hover {
+            background: #f97316;
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MAIN CONTENT STYLES ===== */
+        main {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Movie Grid */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .movie-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 1.5rem;
+        }
+
+        .book-btn {
+            display: block;
+            width: 100%;
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .book-btn:hover {
+            background: #1e3a8a;
+        }
+
+        /* Showtimes Grid */
+        .showtime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .showtime-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+        }
+
+        .showtime-poster {
+            width: 120px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .showtime-details {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .theater-name {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .time-slot {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .time-slot:hover {
+            background: #bae6fd;
+        }
+
+        /* Booking Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #1e293b;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .divider::before {
+            margin-right: 1rem;
+        }
+
+        .divider::after {
+            margin-left: 1rem;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #334155;
+        }
+
+        .social-btn i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .social-btn.facebook {
+            background: #3b5998;
+            color: white;
+            border-color: #3b5998;
+        }
+
+        .social-btn.google {
+            background: #db4437;
+            color: white;
+            border-color: #db4437;
+        }
+
+        .social-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .form-footer a {
+            color: #1e40af;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* ===== FOOTER STYLES ===== */
+        footer {
+            background: #0f172a;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+       .movie-trailer {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #f6f3f3;
+            border-radius: 8px;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-top">
+                <a href="#" class="logo">
+                    <i class="fas fa-film logo-icon"></i>
+                    <span>CineGo</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="./movies.html">Movies</a></li>
+                        <li><a href="./theater.html">Theaters</a></li>
+                        <li><a href="./offers.html">Offers</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li>
+                            <div class="user-profile">
+                                <div class="profile-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="dropdown-menu" id="dropdownMenu">
+                                    <a href="#" id="signInBtn"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                                    <a href="#" id="signUpBtn"><i class="fas fa-user-plus"></i> Sign Up</a>
+                                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="header-content">
+                <h1>Book Your Movie Tickets</h1>
+                <p class="tagline">Experience the magic of cinema with premium comfort and state-of-the-art technology at our theaters</p>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search for movies, theaters or events...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+
+                <div class="header-bottom">
+                    <button id="browseBtn" class="header-btn primary-btn">Browse Movies</button>
+                    <button id="showsBtn" class="header-btn secondary-btn">Today's Shows</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Browse Movies Section -->
+        <section id="browseSection" class="content-section active">
+            <h2>Browse All Movies</h2>
+            <div class="movie-grid">
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg" alt="Dune: Part Two" class="movie-poster">
+                    <div class="movie-info">
+                        <h3>Dune: Part Two</h3>
+                        <p>⭐ 8.5/10 | 2h 46m</p>
+                        <p>Sci-Fi, Adventure</p>
+                        <a href="booking.html?movie=Dune: Part Two" class="book-btn">Book Tickets</a>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BMDdmMTBiNTYtMDIzNi00NGVlLWIzMDYtZTk3MTQ3NGQxZGEwXkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_FMjpg_UX1000_.jpg" alt="The Batman" class="movie-poster">
+                    <div class="movie-info">
+                        <h3>The Batman</h3>
+                        <p>⭐ 7.9/10 | 2h 56m</p>
+                        <p>Action, Crime</p>
+                        <a href="booking.html?movie=The Batman" class="book-btn">Book Tickets</a>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg" alt="Interstellar" class="movie-poster">
+                    <div class="movie-info">
+                        <h3>Interstellar</h3>
+                        <p>⭐ 8.6/10 | 2h 49m</p>
+                        <p>Sci-Fi, Drama</p>
+                        <a href="booking.html?movie=Interstellar" class="book-btn">Book Tickets</a>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://www.themoviedb.org/t/p/w1280/5l62iL3gJThyauCyzlsKRh8kqGX.jpg" alt="Leo" class="movie-poster">
+                    <div class="movie-info">
+                        <h3>Leo (2023)</h3>
+                        <p>⭐ 7.1/10 | 2h 44m</p>
+                        <p>Action, Thriller | Tamil</p>
+                        <a href="booking.html?movie=Leo" class="book-btn">Book Tickets</a>
+                    </div>
+                </div>
+                
+            </div>
+             <div class="movie-trailer">
+            <h2>Watch the Trailer</h2>
+            <div class="video-wrapper">
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/Po3jStA673E?autoplay=0&rel=0" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        </section>
+
+       
+
+        <!-- Today's Shows Section -->
+        <section id="showsSection" class="content-section">
+            <h2>Today's Showtimes</h2>
+            <div class="showtime-grid">
+                <div class="showtime-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg" alt="Dune: Part Two" class="showtime-poster">
+                    <div class="showtime-details">
+                        <h3>Dune: Part Two</h3>
+                        <p class="theater-name">AMC City Center</p>
+                        <div class="time-slots">
+                            <div class="time-slot" data-movie="Dune: Part Two" data-theater="AMC City Center" data-time="10:00 AM">10:00 AM</div>
+                            <div class="time-slot" data-movie="Dune: Part Two" data-theater="AMC City Center" data-time="1:30 PM">1:30 PM</div>
+                            <div class="time-slot" data-movie="Dune: Part Two" data-theater="AMC City Center" data-time="4:45 PM">4:45 PM</div>
+                            <div class="time-slot" data-movie="Dune: Part Two" data-theater="AMC City Center" data-time="8:00 PM">8:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="showtime-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BMDdmMTBiNTYtMDIzNi00NGVlLWIzMDYtZTk3MTQ3NGQxZGEwXkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_FMjpg_UX1000_.jpg" alt="The Batman" class="showtime-poster">
+                    <div class="showtime-details">
+                        <h3>The Batman</h3>
+                        <p class="theater-name">Regal Cinemas</p>
+                        <div class="time-slots">
+                            <div class="time-slot" data-movie="The Batman" data-theater="Regal Cinemas" data-time="11:15 AM">11:15 AM</div>
+                            <div class="time-slot" data-movie="The Batman" data-theater="Regal Cinemas" data-time="2:30 PM">2:30 PM</div>
+                            <div class="time-slot" data-movie="The Batman" data-theater="Regal Cinemas" data-time="6:00 PM">6:00 PM</div>
+                            <div class="time-slot" data-movie="The Batman" data-theater="Regal Cinemas" data-time="9:15 PM">9:15 PM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="showtime-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg" alt="Interstellar" class="showtime-poster">
+                    <div class="showtime-details">
+                        <h3>Interstellar</h3>
+                        <p class="theater-name">Cineplex Downtown</p>
+                        <div class="time-slots">
+                            <div class="time-slot" data-movie="Interstellar" data-theater="Cineplex Downtown" data-time="12:00 PM">12:00 PM</div>
+                            <div class="time-slot" data-movie="Interstellar" data-theater="Cineplex Downtown" data-time="3:30 PM">3:30 PM</div>
+                            <div class="time-slot" data-movie="Interstellar" data-theater="Cineplex Downtown" data-time="7:00 PM">7:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Social Media Badges -->
+    <div class="social-badges">
+        <div class="social-badge facebook" title="Follow us on Facebook">
+            <i class="fab fa-facebook-f"></i>
+        </div>
+        <div class="social-badge github" title="Check our GitHub">
+            <i class="fab fa-github"></i>
+        </div>
+        <div class="social-badge linkedin" title="Connect on LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+        </div>
+        <div class="social-badge instagram" title="Follow us on Instagram">
+            <i class="fab fa-instagram"></i>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Book Tickets</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="movieName">Movie:</label>
+                    <input type="text" id="movieName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="theaterName">Theater:</label>
+                    <input type="text" id="theaterName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="showtime">Showtime:</label>
+                    <input type="text" id="showtime" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="tickets">Number of Tickets:</label>
+                    <select id="tickets">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <button type="submit" class="book-btn">Confirm Booking</button>
+                <div id="successMessage" class="success-message">
+                    Booking confirmed! Thank you for your purchase.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="form-title">Welcome Back</h2>
+            <p class="form-subtitle">Sign in to continue to CineGo</p>
+            
+            <div class="social-login">
+                <button class="social-btn facebook">
+                    <i class="fab fa-facebook-f"></i> Continue with Facebook
+                </button>
+                <button class="social-btn google">
+                    <i class="fab fa-google"></i> Continue with Google
+                </button>
+            </div>
+            
+            <div class="divider">or sign in with email</div>
+            
+            <form id="signInForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group password-container">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+                <div style="text-align: right; margin-bottom: 1.5rem;">
+                    <a href="#" style="color: #1e40af; text-decoration: none; font-size: 0.9rem;">Forgot password?</a>
+                </div>
+                <button type="submit" class="book-btn" style="width: 100%;">Sign In</button>
+            </form>
+            
+            <p class="form-footer">Don't have an account? <a href="#" id="switchToSignUp">Sign Up</a></p>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signUpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="form-title">Create Account</h2>
+            <p class="form-subtitle">Join CineGo to book your movie tickets</p>
+            
+            <div class="social-login">
+                <button class="social-btn facebook">
+                    <i class="fab fa-facebook-f"></i> Continue with Facebook
+                </button>
+                <button class="social-btn google">
+                    <i class="fab fa-google"></i> Continue with Google
+                </button>
+            </div>
+            
+            <div class="divider">or sign up with email</div>
+            
+            <form id="signUpForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="newEmail">Email Address</label>
+                    <input type="email" id="newEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group password-container">
+                    <label for="newPassword">Password</label>
+                    <input type="password" id="newPassword" placeholder="Create a password" required>
+                    <i class="fas fa-eye toggle-password" id="toggleNewPassword"></i>
+                </div>
+                <div class="form-group password-container">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    <i class="fas fa-eye toggle-password" id="toggleConfirmPassword"></i>
+                </div>
+                <button type="submit" class="book-btn" style="width: 100%;">Create Account</button>
+            </form>
+            
+            <p class="form-footer">Already have an account? <a href="#" id="switchToSignIn">Sign In</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 CineGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const browseBtn = document.getElementById('browseBtn');
+        const showsBtn = document.getElementById('showsBtn');
+        const browseSection = document.getElementById('browseSection');
+        const showsSection = document.getElementById('showsSection');
+        const bookingModal = document.getElementById('bookingModal');
+        const closeModal = document.querySelectorAll('.close-modal');
+        const bookingForm = document.getElementById('bookingForm');
+        const movieNameInput = document.getElementById('movieName');
+        const theaterNameInput = document.getElementById('theaterName');
+        const showtimeInput = document.getElementById('showtime');
+        const successMessage = document.getElementById('successMessage');
+        const profileIcon = document.querySelector('.profile-icon');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const signInBtn = document.getElementById('signInBtn');
+        const signUpBtn = document.getElementById('signUpBtn');
+        const signInModal = document.getElementById('signInModal');
+        const signUpModal = document.getElementById('signUpModal');
+        const switchToSignUp = document.getElementById('switchToSignUp');
+        const switchToSignIn = document.getElementById('switchToSignIn');
+        const togglePassword = document.getElementById('togglePassword');
+        const toggleNewPassword = document.getElementById('toggleNewPassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const passwordInput = document.getElementById('password');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        // Switch between Browse Movies and Today's Shows
+        function switchSection(activeSection, activeBtn, inactiveBtn) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            activeSection.classList.add('active');
+            activeBtn.classList.remove('secondary-btn');
+            activeBtn.classList.add('primary-btn');
+            inactiveBtn.classList.remove('primary-btn');
+            inactiveBtn.classList.add('secondary-btn');
+        }
+
+        browseBtn.addEventListener('click', () => {
+            switchSection(browseSection, browseBtn, showsBtn);
+        });
+
+        showsBtn.addEventListener('click', () => {
+            switchSection(showsSection, showsBtn, browseBtn);
+        });
+
+        // Booking functionality
+        function openBookingModal(movie, theater, time) {
+            movieNameInput.value = movie;
+            theaterNameInput.value = theater;
+            showtimeInput.value = time;
+            bookingModal.style.display = 'flex';
+            successMessage.style.display = 'none';
+        }
+
+        // Close all modals
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        closeModal.forEach(btn => {
+            btn.addEventListener('click', closeAllModals);
+        });;
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeAllModals();
+            }
+        });
+
+        // Handle form submission
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const tickets = document.getElementById('tickets').value;
+            successMessage.style.display = 'block';
+            bookingForm.style.display = 'none';
+            setTimeout(() => {
+                bookingModal.style.display = 'none';
+                bookingForm.style.display = 'block';
+                bookingForm.reset();
+            }, 3000);
+        });
+
+        // Time slots in Today's Shows
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', () => {
+                openBookingModal(
+                    slot.dataset.movie,
+                    slot.dataset.theater,
+                    slot.dataset.time
+                );
+            });
+        });
+
+        // User Profile Dropdown
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        dropdownMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Sign In/Sign Up Modals
+        signInBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dropdownMenu.classList.remove('show');
+            signInModal.style.display = 'flex';
+        });
+
+        signUpBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dropdownMenu.classList.remove('show');
+            signUpModal.style.display = 'flex';
+        });
+
+        switchToSignUp.addEventListener('click', (e) => {
+            e.preventDefault();
+            signInModal.style.display = 'none';
+            signUpModal.style.display = 'flex';
+        });
+
+        switchToSignIn.addEventListener('click', (e) => {
+            e.preventDefault();
+            signUpModal.style.display = 'none';
+            signInModal.style.display = 'flex';
+        });
+
+        // Social Media Badges - Open links in new tab
+        document.querySelectorAll('.social-badge').forEach(badge => {
+            badge.addEventListener('click', () => {
+                let url = '#';
+                if (badge.classList.contains('facebook')) {
+                    url = 'https://web.facebook.com/vijayakumar.muralitharan?rdid=VRGKqt3np3MzM7nA&share_url=https%3A%2F%2Fweb.facebook.com%2Fshare%2F1BhB9UcQHB%2F%3F_rdc%3D1%26_rdr#';
+                } else if (badge.classList.contains('github')) {
+                    url = 'https://github.com/VMuralitharan';
+                } else if (badge.classList.contains('linkedin')) {
+                    url = 'www.linkedin.com/in/vijayakumar-muralitharan-03284a323';
+                } else if (badge.classList.contains('instagram')) {
+                    url = 'https://www.instagram.com/vm_dharan/?igsh=ajRkZ213NGE1d3Fr#';
+                }
+                window.open(url, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>

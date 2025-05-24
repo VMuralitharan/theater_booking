@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Seats - CineGo</title>
+    <style>
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER STYLES (same as booking page) ===== */
+              header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+            color: #f59e0b;
+        }
+
+        .search-container {
+            width: 200px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            border: none;
+            font-size: 0.9rem;
+            padding-right: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+
+        /* ===== MAIN CONTENT STYLES ===== */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .booking-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-summary h2 {
+            margin-bottom: 1rem;
+            color: #1e40af;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item strong {
+            color: #64748b;
+        }
+
+        /* Seat Selection Styles */
+        .seat-selection {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen {
+            background: linear-gradient(to right, #a5b4fc, #818cf8, #a5b4fc);
+            height: 20px;
+            margin: 0 auto 2rem;
+            width: 80%;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .seat-map {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .seat-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .seat {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .seat.available {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .seat.available:hover {
+            background: #cbd5e1;
+        }
+
+        .seat.selected {
+            background: #1e40af;
+            color: white;
+        }
+
+        .seat.occupied {
+            background: #64748b;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .seat.legend {
+            cursor: default;
+            width: auto;
+            padding: 0 0.5rem;
+        }
+
+        .seat-legend {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .selection-summary {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .confirm-btn {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: background 0.3s;
+        }
+
+        .confirm-btn:hover {
+            background: #1e3a8a;
+        }
+
+        .confirm-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* ===== FOOTER STYLES ===== */
+        footer {
+            background: #0f172a;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header (same as booking page) -->
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-film logo-icon"></i>
+                    <span>CineGo</span>
+                </a>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+            <h2>Booking Summary</h2>
+            <div class="booking-details">
+                <div class="detail-item">
+                    <strong>Movie:</strong>
+                    <span id="bookingMovie">-</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Theater:</strong>
+                    <span id="bookingTheater">-</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Showtime:</strong>
+                    <span id="bookingTime">-</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Tickets:</strong>
+                    <span id="bookingTickets">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seat Selection -->
+        <div class="seat-selection">
+            <h2>Select Your Seats</h2>
+            
+            <div class="screen">SCREEN</div>
+            
+            <div class="seat-legend">
+                <div class="seat available legend">Available</div>
+                <div class="seat selected legend">Selected</div>
+                <div class="seat occupied legend">Occupied</div>
+            </div>
+            
+            <div class="seat-map" id="seatMap">
+                <!-- Seat map will be generated by JavaScript -->
+            </div>
+            
+            <div class="selection-summary">
+                <p>Selected Seats: <span id="selectedSeatsCount">0</span> / <span id="totalTickets">0</span></p>
+                <p>Seats: <span id="selectedSeatsList">None</span></p>
+            </div>
+            
+            <button id="confirmBtn" class="confirm-btn" disabled>Confirm Selection</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 CineGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get booking details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const movie = urlParams.get('movie');
+        const theater = urlParams.get('theater');
+        const time = urlParams.get('time');
+        const tickets = parseInt(urlParams.get('tickets'));
+        
+        // Display booking info
+        document.getElementById('bookingMovie').textContent = movie;
+        document.getElementById('bookingTheater').textContent = theater;
+        document.getElementById('bookingTime').textContent = time;
+        document.getElementById('bookingTickets').textContent = tickets;
+        document.getElementById('totalTickets').textContent = tickets;
+        
+        // Seat map configuration
+        const rows = 8;
+        const cols = 10;
+        const aisleAfter = 4; // Add aisle after this column
+        
+        // Generate random occupied seats (in a real app, this would come from the server)
+        const occupiedSeats = generateOccupiedSeats(rows, cols, 0.2); // 20% occupied
+        
+        // Generate seat map
+        const seatMap = document.getElementById('seatMap');
+        let selectedSeats = [];
+        
+        for (let row = 0; row < rows; row++) {
+            const seatRow = document.createElement('div');
+            seatRow.className = 'seat-row';
+            
+            for (let col = 0; col < cols; col++) {
+                const seatNumber = `${String.fromCharCode(65 + row)}${col + 1}`;
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                seat.textContent = seatNumber;
+                
+                // Check if seat is occupied
+                if (occupiedSeats.includes(seatNumber)) {
+                    seat.classList.add('occupied');
+                } else {
+                    seat.classList.add('available');
+                    seat.addEventListener('click', () => toggleSeatSelection(seat, seatNumber));
+                }
+                
+                seatRow.appendChild(seat);
+                
+                // Add aisle space
+                if (col === aisleAfter) {
+                    const aisleSpace = document.createElement('div');
+                    aisleSpace.style.width = '20px';
+                    seatRow.appendChild(aisleSpace);
+                }
+            }
+            
+            seatMap.appendChild(seatRow);
+        }
+        
+        // Toggle seat selection
+        function toggleSeatSelection(seatElement, seatNumber) {
+            const index = selectedSeats.indexOf(seatNumber);
+            
+            if (index === -1) {
+                // Select seat if we haven't reached ticket limit
+                if (selectedSeats.length < tickets) {
+                    selectedSeats.push(seatNumber);
+                    seatElement.classList.remove('available');
+                    seatElement.classList.add('selected');
+                }
+            } else {
+                // Deselect seat
+                selectedSeats.splice(index, 1);
+                seatElement.classList.remove('selected');
+                seatElement.classList.add('available');
+            }
+            
+            updateSelectionSummary();
+        }
+        
+        // Update selection summary
+        function updateSelectionSummary() {
+            const selectedCount = selectedSeats.length;
+            document.getElementById('selectedSeatsCount').textContent = selectedCount;
+            
+            if (selectedCount > 0) {
+                document.getElementById('selectedSeatsList').textContent = selectedSeats.join(', ');
+            } else {
+                document.getElementById('selectedSeatsList').textContent = 'None';
+            }
+            
+            // Enable/disable confirm button based on selection
+            const confirmBtn = document.getElementById('confirmBtn');
+            confirmBtn.disabled = selectedCount !== tickets;
+        }
+        
+        // Confirm selection
+        document.getElementById('confirmBtn').addEventListener('click', function() {
+            // In a real app, you would send this data to the server
+            const bookingData = {
+                movie: movie,
+                theater: theater,
+                time: time,
+                tickets: tickets,
+                seats: selectedSeats,
+                totalPrice: calculatePrice(tickets)
+            };
+            
+            // Store booking data temporarily (in a real app, use server-side storage)
+            sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
+            
+            // Redirect to confirmation page
+            window.location.href = 'payment.html';
+        });
+        
+        // Helper function to generate random occupied seats
+        function generateOccupiedSeats(rows, cols, occupancyRate) {
+            const totalSeats = rows * cols;
+            const occupiedCount = Math.floor(totalSeats * occupancyRate);
+            const occupiedSeats = [];
+            
+            for (let i = 0; i < occupiedCount; i++) {
+                const row = Math.floor(Math.random() * rows);
+                const col = Math.floor(Math.random() * cols);
+                const seatNumber = `${String.fromCharCode(65 + row)}${col + 1}`;
+                
+                if (!occupiedSeats.includes(seatNumber)) {
+                    occupiedSeats.push(seatNumber);
+                }
+            }
+            
+            return occupiedSeats;
+        }
+        
+        // Helper function to calculate price
+        function calculatePrice(tickets) {
+            const basePrice = 12.50;
+            return (basePrice * tickets).toFixed(2);
+        }
+    </script>
+</body>
+</html>
